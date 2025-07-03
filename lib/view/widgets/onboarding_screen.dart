@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/utils/app_textStyles.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -25,6 +26,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         title: 'title',
         description: 'simple and secure shopping at your fingertips'),
   ];
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -43,6 +45,27 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   const SizedBox(
                     height: 40,
                   ),
+                  Text(
+                    _items[index].title,
+                    textAlign: TextAlign.center,
+                    style: AppTextstyles.withcolor(AppTextstyles.h1,
+                        Theme.of(context).textTheme.bodyLarge!.color!),
+                  ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 32), // تم التصحيح هنا
+                    child: Text(
+                      _items[index].description,
+                      textAlign: TextAlign.center,
+                      style: AppTextstyles.withcolor(
+                        AppTextstyles.h1,
+                        isDark ? Colors.grey[400]! : Colors.grey[600]!,
+                      ),
+                    ),
+                  ),
                 ],
               );
             },
@@ -53,7 +76,65 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 _currentPage = index;
               });
             },
-          )
+          ),
+          Positioned(
+              bottom: 80,
+              left: 0,
+              right: 0,
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(
+                      _items.length,
+                      (index) => AnimatedContainer(
+                          duration: const Duration(microseconds: 300),
+                          margin: const EdgeInsets.symmetric(horizontal: 4),
+                          height: 8,
+                          width: _currentPage == index ? 24 : 8,
+                          decoration: BoxDecoration(
+                              color: _currentPage == index
+                                  ? Theme.of(context).primaryColor
+                                  : (isDark
+                                      ? Colors.grey[700]
+                                      : Colors.grey[300]),
+                              borderRadius: BorderRadius.circular(4)))))),
+          Positioned(
+              bottom: 16,
+              left: 16,
+              right: 16,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  TextButton(
+                      onPressed: () {},
+                      child: Text(
+                        'skip',
+                        style: AppTextstyles.withcolor(
+                            AppTextstyles.buttunMeduim,
+                            isDark ? Colors.grey[400]! : Colors.grey[600]!),
+                      )),
+                  ElevatedButton(
+                      onPressed: () {
+                        if (_currentPage < _items.length - 1) {
+                          _pageController.nextPage(
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.easeInOut);
+                        } else {
+                          // Navigate to next screen
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Theme.of(context).primaryColor,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 32, vertical: 16),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12))),
+                      child: Text(
+                        _currentPage == _items.length - 1
+                            ? 'Get Started'
+                            : 'Next',
+                      ))
+                ],
+              ))
         ],
       ),
     );
